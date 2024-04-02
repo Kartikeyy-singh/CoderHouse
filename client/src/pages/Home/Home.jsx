@@ -14,7 +14,7 @@ const Home = () => {
 
   const navigate = useNavigate();
   function startRegister() {
-    navigate("/register");
+    navigate("/authenticate");
   }
 
   return (
@@ -26,7 +26,7 @@ const Home = () => {
           sure nothing breaks
         </p>
         <div>
-          <Button onClick={startRegister} title="Get Your Username"></Button>
+          <Button onClick={startRegister} title="Let's Go"></Button>
         </div>
         <div className={styles.signinWrapper}>
           <span className={styles.hasInvite}>Have an invite text?</span>

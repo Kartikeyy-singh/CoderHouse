@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import StepOTP from "../Steps/StepOTP";
-import StepPhoneEmail from "../Steps/StepPhoneEmail";
+import StepOTP from "../Steps/StepOTP/StepOTP";
+import StepPhoneEmail from "../Steps/StepPhoneEmail/StepPhoneEmail";
+import Test from "./Test";
 
 const steps = {
   1: StepPhoneEmail,
