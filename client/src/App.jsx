@@ -8,37 +8,35 @@ import Login from "./pages/Login/Login";
 import Authenticate from "./pages/Authenticate/Authenticate";
 import Activate from "./pages/Activate/Activate";
 import Rooms from "./pages/Rooms/Rooms";
+import { useSelector } from "react-redux";
 
-const isAuth = false;
-const user = {
-  activated: false,
-};
 
 function App() {
+  const { user, isAuth } = useSelector((state) => state.auth);
   return (
     <BrowserRouter>
       <Navigation />
       <Routes>
-        <Route path="/" element={NextRoute1()} />
+        <Route path="/" element={NextRoute1(isAuth)} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/authenticate" element={NextRoute2()} />
-        <Route path="/activate" element={NextRoute3()} />
-        <Route path="/rooms" element={NextRoute4()} />
+        <Route path="/authenticate" element={NextRoute2(isAuth)} />
+        <Route path="/activate" element={NextRoute3(user, isAuth)} />
+        <Route path="/rooms" element={NextRoute4(user,isAuth)} />
       </Routes>
     </BrowserRouter>
   );
 }
 
-const NextRoute1 = () => {
+const NextRoute1 = (isAuth) => {
   return isAuth ? <Navigate to="/rooms" replace /> : <Home />;
 };
 
-const NextRoute2 = () => {
+const NextRoute2 = (isAuth) => {
   return isAuth ? <Navigate to="/rooms" replace /> : <Authenticate />;
 };
 
-const NextRoute3 = () => {
+const NextRoute3 = (user,isAuth) => {
   return !isAuth ? (
     <Navigate to="/" replace />
   ) : !user.activated ? (
@@ -48,7 +46,7 @@ const NextRoute3 = () => {
   );
 };
 
-const NextRoute4 = () => {
+const NextRoute4 = (user,isAuth) => {
   return !isAuth ? (
     <Navigate to="/" replace />
   ) : !user.activated ? (
