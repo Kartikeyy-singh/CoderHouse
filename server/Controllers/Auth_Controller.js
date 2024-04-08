@@ -3,6 +3,8 @@ const { GenerateOTP, SendbySMS, verifyOTPservice } = require("../Services/OTP-se
 const { HashOPT } = require("../Services/hash-service")
 const { findUser, createUser } = require("../Services/user-service");
 const { GenerateToken } = require("../Services/Token-service");
+const UserDto = require('../dtos/user-dtos');
+const { storerefreshToken }  = require("../Services/Token-service")
 
 exports.sendOTP = async (req, res) => {
     const { phone } = req.body;
@@ -23,7 +25,7 @@ exports.sendOTP = async (req, res) => {
     const hashedOTP = await HashOPT(data);
     // console.log(hashedOTP);
     try {
-        const smsresponse = await SendbySMS(phone, OTP);
+        // const smsresponse = await SendbySMS(phone, OTP);
         return res.json({
             hash: `${hashedOTP}.${expire}`,
             OTP:OTP,
@@ -83,11 +85,20 @@ exports.verifyOTP = async (req, res) => {
     });
     // console.log(accessToken);
     // console.log(refreshToken);
+
+    await storerefreshToken(refreshToken, user._id);
+
     res.cookie('refreshToken', refreshToken, {
         maxAge: 1000 * 60 * 60 * 24 * 30,
         httpOnly: true,
     });
 
-    res.json({ accessToken,user });
+    res.cookie('accessToken', accessToken, {
+        maxAge: 1000 * 60 * 60 * 24 * 30,
+        httpOnly: true,
+    });
+
+    const userDto = new UserDto(user);
+    res.json({ user: userDto, isAuth: true });
 
 }
