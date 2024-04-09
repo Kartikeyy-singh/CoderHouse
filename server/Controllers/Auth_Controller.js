@@ -100,5 +100,7 @@ exports.verifyOTP = async (req, res) => {
 
     const userDto = new UserDto(user);
     res.json({ user: userDto, isAuth: true });
+    // res.json({ user: userDto, Auth: true }); Auth or isAuth
+
 
 }
