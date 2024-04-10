@@ -2,7 +2,7 @@
 const { GenerateOTP, SendbySMS, verifyOTPservice } = require("../Services/OTP-service");
 const { HashOPT } = require("../Services/hash-service")
 const { findUser, createUser } = require("../Services/user-service");
-const { GenerateToken } = require("../Services/Token-service");
+const { GenerateToken, findRefreshToken, verifyRefreshToken, verifyAccessToken, updateRefreshToken, removeToken } = require("../Services/Token-service");
 const UserDto = require('../dtos/user-dtos');
 const { storerefreshToken }  = require("../Services/Token-service")
 
@@ -104,3 +104,75 @@ exports.verifyOTP = async (req, res) => {
 
 
 }
+// let ct = 0;
+exports.refresh = async (req, res) => {
+    // get refresh token from cookie
+    // console.log(req.cookies);
+    const { refreshToken: refreshTokenFromCookie } = req.cookies;
+    // check if token is valid
+    let userData;
+    try {
+        userData = await verifyRefreshToken(
+            refreshTokenFromCookie
+        );
+    } catch (err) {
+        return res.status(401).json({ message: 'Invalid Token' });
+    }
+
+    // Check if token is in db
+    try {
+        const token = await findRefreshToken(
+            userData._id,
+            refreshTokenFromCookie
+        );
+        if (!token) {
+            return res.status(401).json({ message: 'Invalid token' });
+        }
+    } catch (err) {
+        return res.status(500).json({ message: 'Internal error' });
+    } 
+    // check if valid user
+    const user = await findUser({ _id: userData._id });
+    if (!user) {
+        return res.status(404).json({ message: 'No user' });
+    }
+    // Generate new tokens
+    const { refreshToken, accessToken } = await GenerateToken({
+        _id: userData._id,
+        activated: true,
+    });
+    // console.log("Req  No.", ct++);
+    // console.log(refreshToken, accessToken);
+    // Update refresh token
+    try {
+        await updateRefreshToken(userData._id, refreshToken);
+    } catch (err) {
+        return res.status(500).json({ message: 'Internal error' });
+    }
+
+    res.cookie('refreshToken', refreshToken, {
+        maxAge: 1000 * 60 * 60 * 24 * 30,
+        httpOnly: true,
+    });
+
+    res.cookie('accessToken', accessToken, {
+        maxAge: 1000 * 60 * 60 * 24 * 30,
+        httpOnly: true,
+    });
+
+    // response
+    const userDto = new UserDto(user);
+    res.json({ user: userDto, auth: true });
+
+}
+
+exports.logout = async (req,res) => {
+    const { refreshToken } = req.cookies;
+    // delete refresh token from db
+    await removeToken(refreshToken);
+    // delete cookies
+    res.clearCookie('refreshToken');
+    res.clearCookie('accessToken');
+    res.json({ user: null, auth: false });
+}
+

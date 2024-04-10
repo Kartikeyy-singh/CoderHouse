@@ -17,7 +17,12 @@ export const authSlice = createSlice({
             const { user } = action.payload;
             console.log(user);
             state.user = user;
-            state.isAuth = true;
+            if (user === null) {
+                state.isAuth = false;
+            }
+            else {
+                state.isAuth = true;
+            }
         },
         setOtp: (state, action) => {
             const { phone, hash } = action.payload;

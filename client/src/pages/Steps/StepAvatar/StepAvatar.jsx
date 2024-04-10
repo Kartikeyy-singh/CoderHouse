@@ -6,13 +6,14 @@ import { useSelector, useDispatch } from "react-redux";
 import { setAvatar } from "../../../Store/activateSlice";
 import { activate } from "../../../http/index";
 import { setAuth } from "../../../Store/authSlice";
+import Loader from "../../../components/shared/Loader/Loader";
 
 const StepAvatar = ({ onNext }) => {
 
   const dispatch = useDispatch();
   const { name, avatar } = useSelector((state) => state.activate);
   const [image, setImage] = useState("/images/monkey-avatar.png");
-
+  const [loading, setloading] = useState(false);
 
   function captureImage(e) {
     const file = e.target.files[0];
@@ -25,6 +26,10 @@ const StepAvatar = ({ onNext }) => {
   }
 
   async function submit() {
+    if (!name || !avatar) {
+      return;
+    }
+    setloading(true);
     try {
       const { data } = await activate({ name, avatar });
       // console.log(data);
@@ -32,9 +37,15 @@ const StepAvatar = ({ onNext }) => {
         dispatch(setAuth(data));
       }
       console.log(data);
+      setloading(false);
     } catch (err) {
       console.log(err);
+      setloading(false);
     }
+  }
+
+  if (loading) {
+    return <Loader message={"Activation in Progress..."}/>
   }
 
   return (

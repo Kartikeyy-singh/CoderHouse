@@ -14,7 +14,7 @@ exports.activate = async (req, res) => {
 
     // Image Base64
     const buffer = Buffer.from(
-        avatar.replace(/^data:image\/png;base64,/, ''),
+        avatar.replace(/^data:image\/(png|jpg|jpeg);base64,/, ''),
         'base64'
     );
 
@@ -27,7 +27,7 @@ exports.activate = async (req, res) => {
         // Resize image
         sharp(buffer)
         .resize(150, null) // Resize to width 150px, maintain aspect ratio
-            .toFile(`C:\Users\kartikey singh\Desktop\CoderHouse\server\storage/${imagePath}`)
+            .toFile(`./storage/${imagePath}`)
             .then(() => {
                 // Image resized successfully
             })
@@ -36,7 +36,6 @@ exports.activate = async (req, res) => {
             });
 
     } catch (err) {
-        // console.log("sdfkno");
         res.status(500).json({ message: 'Could not process the image' });
         return;
     }
