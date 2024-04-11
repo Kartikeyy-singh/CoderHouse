@@ -35,7 +35,23 @@ const Navigation = () => {
         <img src="/images/logo.png" alt="logo" />
         <span style={logoText}>Codershouse</span>
       </Link>
-      {isAuth && <button onClick={Logoutuser}>Logout</button>}
+      {isAuth && (
+        <div className={styles.navRight}>
+          <h3>{user?.name}</h3>
+          <Link to="/">
+            <img
+              className={styles.avatar}
+              src={user.avatar ? user.avatar : "/images/monkey-avatar.png"}
+              width="50px"
+              height="50px"
+              alt="avatar"
+            />
+          </Link>
+          <button className={styles.logoutButton} onClick={Logoutuser}>
+            <img src="/images/logout.png" alt="logout" />
+          </button>
+        </div>
+      )}
     </nav>
   );
 };
