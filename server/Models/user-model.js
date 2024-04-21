@@ -12,7 +12,13 @@ const userSchema = new mongoose.Schema(
         },
         avatar: {
             type: String,
-            required: false
+            required: false,
+            get:(avatar)=> {
+                if (avatar) {
+                    return `${process.env.BASE_URL}${avatar}`;
+                }
+                return avatar;
+            }
         },
         activated: {
             type: Boolean,
@@ -22,7 +28,8 @@ const userSchema = new mongoose.Schema(
     },
     {
         timestamps: true,
+        toJSON: { getters: true },
     }
 );
 
-module.exports = mongoose.model('user', userSchema);
+module.exports = mongoose.model('User', userSchema);

@@ -15,6 +15,8 @@ export const sendOtp = (data) => api.post("/api/send-otp", data);
 export const verifyOtp = (data) => api.post("/api/verify-otp", data);
 export const activate = (data) => api.post("/api/activate", data);
 export const logout = () => api.post("/api/logout");
+export const createRoom = (data) => api.post("/api/rooms", data);
+export const getAllRooms = () => api.get("/api/rooms");
 
 // Interceptors
 api.interceptors.response.use(
@@ -30,12 +32,10 @@ api.interceptors.response.use(
         ) {
             originalRequest.isRetry = true;
             try {
-              
                 // console.log("dknf");
                 await axios.get("http://localhost:4000/api/refresh", {
                   withCredentials: true,
                 });
-
                 return api.request(originalRequest);
             } catch (err) {
                 console.log(err.message);
@@ -44,7 +44,5 @@ api.interceptors.response.use(
         throw error;
     }
 );
-
-
 
 export default api;

@@ -11,6 +11,7 @@ import Rooms from "./pages/Rooms/Rooms";
 import { useSelector } from "react-redux";
 import { useLoadingWithRefresh } from "./hooks/useLoadingWithRefresh";
 import Loader from "./components/shared/Loader/Loader";
+import Room from "../src/pages/Room/Room"
 
 function App() {
   const { user, isAuth } = useSelector((state) => state.auth)
@@ -28,6 +29,7 @@ function App() {
         <Route path="/authenticate" element={NextRoute2(isAuth)} />
         <Route path="/activate" element={NextRoute3(user, isAuth)} />
         <Route path="/rooms" element={NextRoute4(user, isAuth)} />
+        <Route path="/room/:id" element={NextRoute5(user, isAuth)} />
       </Routes>
     </BrowserRouter>
   );
@@ -58,6 +60,15 @@ const NextRoute4 = (user,isAuth) => {
     <Navigate to="/activate" replace />
   ) : (
     <Rooms />
+  );
+};
+const NextRoute5 = (user,isAuth) => {
+  return !isAuth ? (
+    <Navigate to="/" replace />
+  ) : !user.activated ? (
+    <Navigate to="/activate" replace />
+  ) : (
+    <Room />
   );
 };
 
