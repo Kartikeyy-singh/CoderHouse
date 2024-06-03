@@ -20,7 +20,7 @@ exports.create = async (req, res) => {
 }
 
 exports.index = async (req, res) => {
-    const rooms = await getAllRooms(['open']);
+    const rooms = await getAllRooms(['open','social','private']);
     // console.log("dsjf");
     const allRooms = rooms.map((room) => new RoomDto(room));
     return res.json(allRooms);
