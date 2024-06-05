@@ -1,5 +1,5 @@
 const RoomDto = require('../dtos/rooms');
-const { create, getAllRooms } = require("../Services/room-service");
+const { create, getAllRooms,getRoom } = require("../Services/room-service");
 
 exports.create = async (req, res) => {
     const { topic, roomType } = req.body;
@@ -24,5 +24,11 @@ exports.index = async (req, res) => {
     // console.log("dsjf");
     const allRooms = rooms.map((room) => new RoomDto(room));
     return res.json(allRooms);
+}
+
+exports.show = async(req, res) => {
+    const room = await getRoom(req.params.roomId);
+    // console.log(room);
+    return res.json(room);
 }
 

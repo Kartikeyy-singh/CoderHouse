@@ -18,3 +18,8 @@ exports.getAllRooms = async (types) => {
         .exec();
     return rooms;
 }
+
+exports.getRoom = async(roomId) => {
+    const room = await RoomModel.findOne({ _id: roomId });
+    return room;
+}
